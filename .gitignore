@@ -1,0 +1,13 @@
+# Crash log files
+*CRASH.log
+*crash.log
+
+#Output file used during development
+postPayloadInit.txt
+
+# Local venv directories
+**/venv/*
+**/venv
+
+# pycache directories
+**/*__pycache__*
