@@ -1,0 +1,11 @@
+[
+    {"this": "file"}, 
+    {"must": "be"}, 
+    {"a": "list"}, 
+    {"of": "valid"}, 
+    {"json": "objects"}, 
+    {"and": "this"},
+    {"entire": "file"},
+    {"must": "also be"},
+    {"valid": "json."}
+]

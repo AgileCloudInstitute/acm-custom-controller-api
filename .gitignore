@@ -2,8 +2,9 @@
 *CRASH.log
 *crash.log
 
-#Output file used during development
+#Output files used during development
 postPayloadInit.txt
+getHeadersInit.txt
 
 # Local venv directories
 **/venv/*
