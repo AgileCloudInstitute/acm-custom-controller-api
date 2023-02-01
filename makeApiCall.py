@@ -62,7 +62,7 @@ def postCommand(myurl, counter=0):
   postJson = { 
     'command': 'on', 
     'variables': [ 
-        {"this": "file"}, 
+        {"this": "block"}, 
         {"must": "be"}, 
         {"a": "list"}, 
         {"of": "valid"}, 

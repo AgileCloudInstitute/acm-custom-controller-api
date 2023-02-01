@@ -6,6 +6,9 @@
 postPayloadInit.txt
 getHeadersInit.txt
 
+#temp logs put here for consumption by ACM and then gitignored to keep them out of version control. Put your persistent logs someplace else.
+*.log
+
 # Local venv directories
 **/venv/*
 **/venv

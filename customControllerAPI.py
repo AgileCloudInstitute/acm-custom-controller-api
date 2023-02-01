@@ -6,11 +6,18 @@ from twisted.web.server import Site
 from twisted.web.wsgi import WSGIResource
 import platform
 import os
+import pathlib
 
 app = Flask(__name__)
 
 @app.route('/controller/custom/', methods=['GET'])
 def get_outputs():
+  #Write whatever log entries you want to be ingested into Agile Cloud Manager's logs.
+  logEntries = [
+    {'controllerName':'customCtlr', 'message':'First write this to log from GET.'},
+    {'controllerName':'customCtlr', 'message':'Second write this to log from GET.'},
+    {'controllerName':'customCtlr', 'message':'Third write this to log from GET.'}
+  ]
   apiString = 'None'
   if platform.system() == 'Windows':
     apiStringLocation = os.path.expanduser("~")+'\\acm\\keys\\custom.txt'
@@ -21,11 +28,21 @@ def get_outputs():
   ##FOR TESTING ONLY: hard-coding output variables so you can see working example of 
   ## format for output.  Your actual custom controller would need code to interpolate 
   ## the values of output variables from whatever source system you are controlling.
+  ## You must include at least one output variable to signal that the controller POST 
+  # command has completed its run, even if the one output variable in that case is an
+  # arbitrary, predefined message.
   outputVars = [
     {'varName':'firstOutputVar', 'varValue':'value-for-first-output-variable'},
     {'varName':'secondOutputVar', 'varValue':'value-for-second-output-variable'}
   ]
-  resp = make_response(jsonify(outputVars))
+  #Uncomment this next line to test failing to receive output variables, 
+  # which means that the POST command has not yet completed.
+  #outputVars = []
+  responseJson = { 
+    'outputVars': outputVars,
+    'logEntries': logEntries
+  }
+  resp = make_response(jsonify(responseJson))
   resp.headers['api-string'] = apiString
   resp.headers['content-type'] = 'application/json'  
   with open("getHeadersInit.txt", mode='w') as out:
@@ -50,6 +67,12 @@ def get_outputs():
 
 @app.route('/controller/custom/', methods=['POST'])
 def invoke_controller():
+  #Write whatever log entries you want to be ingested into Agile Cloud Manager's logs.
+  logEntries = [
+    {'controllerName':'customCtlr', 'message':'First write this to log from POST.'},
+    {'controllerName':'customCtlr', 'message':'Second write this to log from POST.'},
+    {'controllerName':'customCtlr', 'message':'Third write this to log from POST.'}
+  ]
   apiString = 'None'
   if platform.system() == 'Windows':
     apiStringLocation = os.path.expanduser("~")+'\\acm\\keys\\custom.txt'
@@ -64,8 +87,22 @@ def invoke_controller():
   with open("postPayloadInit.txt", mode='w') as out:
      out.write("Inside post endpoint!\n")
   record = json.loads(request.data)
-  print("record is: ", str(record))
-  resp = make_response(jsonify(record))
+  responsePayload = [ 
+        {"this": "block"}, 
+        {"must": "be"}, 
+        {"a": "list"}, 
+        {"of": "valid"}, 
+        {"json": "objects"}, 
+        {"and": "the"},
+        {"entire": "response"},
+        {"must": "also be"},
+        {"valid": "json."}
+  ]
+  responseJson = { 
+    'payload': responsePayload,
+    'logEntries': logEntries
+  }
+  resp = make_response(jsonify(responseJson))
   resp.headers['api-string'] = apiString
   resp.headers['content-type'] = 'application/json'  
   with open("postPayloadInit.txt", mode='w') as out:
@@ -73,6 +110,8 @@ def invoke_controller():
      out.write(str(resp.headers)+"\n")
      out.write("-------------------------------------------\n")
      out.write(str(request.headers)+"\n")
+     out.write("-------------------------------------------\n")
+     out.write(str(record)+"\n")
   if (request.headers.get('Api-String') == None) and (request.headers.get('api-string') == None):
     resp.headers['api-string'] = 'None'
     abort(401, description="You failed to supply a correct api-string header value.")
