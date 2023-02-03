@@ -1,6 +1,7 @@
 import subprocess
 import re
 import os
+import platform
 
 ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
 
