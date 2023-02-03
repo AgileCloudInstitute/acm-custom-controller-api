@@ -53,18 +53,23 @@ twistdLocation = getSingleLineShellOutput("where twistd")
 #runShellCommand("sc start TwistedFlaskApp")
 #print("twistdLocation is: ", twistdLocation.replace("\\","\\\\"))
 
+print("platform.system() is: ", str(platform.system()))
 ##Start the Twisted web server and configure it to control the api
-#runShellCommand("twistd web --wsgi customControllerAPI.app")
-print("About to get powershell location.")
-powershellLocation = getSingleLineShellOutput("where powershell")
-print("powershellLocation is: ", powershellLocation)
-#startTwistdCommand = powershellLocation + " twistd web --wsgi customControllerAPI.app &"
-#Next line says it started job but the api cannot be accessed.
-#startTwistdCommand = powershellLocation + " Start-Job { "+twistdLocation+" web --wsgi customControllerAPI.app }"
+if platform.system() == 'Windows':
+  #runShellCommand("twistd web --wsgi customControllerAPI.app")
+  print("About to get powershell location.")
+  powershellLocation = getSingleLineShellOutput("where powershell")
+  print("powershellLocation is: ", powershellLocation)
+  #startTwistdCommand = powershellLocation + " twistd web --wsgi customControllerAPI.app &"
+  #Next line says it started job but the api cannot be accessed.
+  #startTwistdCommand = powershellLocation + " Start-Job { "+twistdLocation+" web --wsgi customControllerAPI.app }"
+  #"$a = start-process -NoNewWindow powershell {timeout 10; 'done'} -PassThru"
+  #Next line works, but the problem is the process persists after the venv is destroyed.
+  startTwistdCommand = powershellLocation + " $a = start-process -NoNewWindow powershell { "+twistdLocation+" web --wsgi customControllerAPI.app"+" } -PassThru"
+if platform.system() == 'Linux':
+  startTwistdCommand = twistdLocation+" web --wsgi customControllerAPI.app  &>/dev/null & "
+  #command &>/dev/null &
 
-#"$a = start-process -NoNewWindow powershell {timeout 10; 'done'} -PassThru"
-#Next line works, but the problem is the process persists after the venv is destroyed.
-startTwistdCommand = powershellLocation + " $a = start-process -NoNewWindow powershell { "+twistdLocation+" web --wsgi customControllerAPI.app"+" } -PassThru"
 print("startTwistdCommand is: ", startTwistdCommand)
 #subprocess.call('C:\Windows\System32\powershell.exe Get-Process', shell=True)
 subprocess.call(startTwistdCommand, shell=True)
