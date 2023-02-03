@@ -29,7 +29,10 @@ def getSingleLineShellOutput(commandToRun):
 
 #Create a virtual environment with venv
 print("About to create venv.")
-runShellCommand("python -3 -m venv venv")
+if platform.system() == 'Windows':
+  runShellCommand("py -3 -m venv venv")
+if platform.system() == 'Linux':
+  runShellCommand("python3 -m venv venv")
 
 ##Activate venv
 print("About to activate venv.")
