@@ -27,14 +27,19 @@ def getSingleLineShellOutput(commandToRun):
       break
 
 #Create a virtual environment with venv
+print("About to create venv.")
 runShellCommand("py -3 -m venv venv")
 
 ##Activate venv
+print("About to activate venv.")
 runShellCommand("venv\Scripts\\activate")
 
 ##Install flask for api, requests to call api, and Twisted to host api
+print("About to install flask.")
 runShellCommand("pip install Flask")
+print("About to install requests.")
 runShellCommand("pip install requests")
+print("About to install twisted.")
 runShellCommand("pip install Twisted")
 
 ##Set environment variable for the API
@@ -50,6 +55,7 @@ twistdLocation = getSingleLineShellOutput("where twistd")
 
 ##Start the Twisted web server and configure it to control the api
 #runShellCommand("twistd web --wsgi customControllerAPI.app")
+print("About to get powershell location.")
 powershellLocation = getSingleLineShellOutput("where powershell")
 print("powershellLocation is: ", powershellLocation)
 #startTwistdCommand = powershellLocation + " twistd web --wsgi customControllerAPI.app &"
