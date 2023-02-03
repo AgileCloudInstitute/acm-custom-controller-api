@@ -36,7 +36,7 @@ print("About to activate venv.")
 if platform.system() == 'Windows':
   runShellCommand("venv\Scripts\\activate")
 if platform.system() == 'Linux':
-  runShellCommand("venv/Scripts/activate")
+  runShellCommand("source venv/bin/activate")
 
 ##Install flask for api, requests to call api, and Twisted to host api
 print("About to install flask.")
