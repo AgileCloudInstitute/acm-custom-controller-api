@@ -29,11 +29,14 @@ def getSingleLineShellOutput(commandToRun):
 
 #Create a virtual environment with venv
 print("About to create venv.")
-runShellCommand("py -3 -m venv venv")
+runShellCommand("python -3 -m venv venv")
 
 ##Activate venv
 print("About to activate venv.")
-runShellCommand("venv\Scripts\\activate")
+if platform.system() == 'Windows':
+  runShellCommand("venv\Scripts\\activate")
+if platform.system() == 'Linux':
+  runShellCommand("venv/Scripts/activate")
 
 ##Install flask for api, requests to call api, and Twisted to host api
 print("About to install flask.")
@@ -47,12 +50,15 @@ runShellCommand("pip install Twisted")
 os.environ['PYTHONPATH'] = '.'
 print("Done updating PYTHONPATH.  About to start server.")
 
-twistdLocation = getSingleLineShellOutput("where twistd")
-#createServiceCommand = 'sc create TwistedFlaskApp binPath= "C:\\Users\\user8\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\twistd.exe web --wsgi --customControllerAPI.app"'
-#createServiceCommand = 'sc create TwistedFlaskApp binPath= "'+twistdLocation.replace("\\","\\\\")+' web --wsgi customControllerAPI.app"'
-#runShellCommand(createServiceCommand)
-#runShellCommand("sc start TwistedFlaskApp")
-#print("twistdLocation is: ", twistdLocation.replace("\\","\\\\"))
+if platform.system() == 'Windows':
+  twistdLocation = getSingleLineShellOutput("where twistd")
+  #createServiceCommand = 'sc create TwistedFlaskApp binPath= "C:\\Users\\user8\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\twistd.exe web --wsgi --customControllerAPI.app"'
+  #createServiceCommand = 'sc create TwistedFlaskApp binPath= "'+twistdLocation.replace("\\","\\\\")+' web --wsgi customControllerAPI.app"'
+  #runShellCommand(createServiceCommand)
+  #runShellCommand("sc start TwistedFlaskApp")
+  #print("twistdLocation is: ", twistdLocation.replace("\\","\\\\"))
+if platform.system() == 'Linux':
+  twistdLocation = getSingleLineShellOutput("which twistd")
 
 print("platform.system() is: ", str(platform.system()))
 ##Start the Twisted web server and configure it to control the api
