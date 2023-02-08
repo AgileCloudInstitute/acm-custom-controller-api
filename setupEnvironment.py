@@ -57,7 +57,7 @@ if platform.system() == 'Windows':
   startTwistdCommand = powershellLocation + " $a = start-process -NoNewWindow powershell { "+twistdLocation+" web --wsgi customControllerAPI.app"+" } -PassThru"
 
   print("startTwistdCommand is: ", startTwistdCommand)
-  subprocess.call(startTwistdCommand, shell=True)
+  server = subprocess.call(startTwistdCommand, shell=True)
   print("startTwistdCommand should be running in the background now.")
 
 if platform.system() == 'Linux':
