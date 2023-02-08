@@ -28,73 +28,38 @@ def getSingleLineShellOutput(commandToRun):
       break
 
 if platform.system() == 'Windows':
-#\\start
-  runShellCommand(
-    """
-    echo "About to create venv."
-    py -3 -m venv venv
-    echo "About to activate venv."
-    venv\Scripts\\activate
-    echo "About to install flask."
-    pip install Flask
-    echo "About to install requests."
-    pip install requests
-    echo "About to install twisted."
-    pip install Twisted
-    set PYTHONPATH=.
-    echo "Done updating PYTHONPATH.  About to start server."
-    echo "About to get twistd location."
-    where twistd > twstdlocation.txt
-    set /p twistdLocation=<twstdlocation.txt
-    echo "twistdLocation is: "
-    echo %twistdLocation%
+  #Create a virtual environment with venv
+  print("About to create venv.")
+  runShellCommand("py -3 -m venv venv")
 
-    echo "About to get powershell location."
-    where powershell > powershelllocation.txt
-    set /p powershellLocation=<powershelllocation.txt
-    echo "powershellLocation is: "
-    echo %powershellLocation%
+  ##Activate venv
+  print("About to activate venv.")
+  runShellCommand("venv\Scripts\\activate")
 
-    set "startTwistdCommand=%powershellLocation% $a = start-process -NoNewWindow powershell { %twistdLocation% web --wsgi customControllerAPI.app } -PassThru"
-    echo "startTwistdCommand is: %\startTwistdCommand%"
-    start /b %\startTwistdCommand%"
-    echo "startTwistdCommand should be running in the background now."
-    """
-    )
+  ##Install flask for api, requests to call api, and Twisted to host api
+  print("About to install flask.")
+  runShellCommand("pip install Flask")
+  print("About to install requests.")
+  runShellCommand("pip install requests")
+  print("About to install twisted.")
+  runShellCommand("pip install Twisted")
 
-#\\end
-#  #Create a virtual environment with venv
-#  print("About to create venv.")
-#  runShellCommand("py -3 -m venv venv")
-#
-#  ##Activate venv
-#  print("About to activate venv.")
-#  runShellCommand("venv\Scripts\\activate")
-#
-#  ##Install flask for api, requests to call api, and Twisted to host api
-#  print("About to install flask.")
-#  runShellCommand("pip install Flask")
-#  print("About to install requests.")
-#  runShellCommand("pip install requests")
-#  print("About to install twisted.")
-#  runShellCommand("pip install Twisted")
-#
-#  ##Set environment variable for the API
-#  os.environ['PYTHONPATH'] = '.'
-#  print("Done updating PYTHONPATH.  About to start server.")
-#
-#  twistdLocation = getSingleLineShellOutput("where twistd")
-#
-#  ##Start the Twisted web server and configure it to control the api
-#  print("About to get powershell location.")
-#  powershellLocation = getSingleLineShellOutput("where powershell")
-#  print("powershellLocation is: ", powershellLocation)
-#  startTwistdCommand = powershellLocation + " $a = start-process -NoNewWindow powershell { "+twistdLocation+" web --wsgi customControllerAPI.app"+" } -PassThru"
-#
-#  print("startTwistdCommand is: ", startTwistdCommand)
-#  server = subprocess.call(startTwistdCommand, shell=True)
-#  print("startTwistdCommand should be running in the background now.")
-  
+  ##Set environment variable for the API
+  os.environ['PYTHONPATH'] = '.'
+  print("Done updating PYTHONPATH.  About to start server.")
+
+  twistdLocation = getSingleLineShellOutput("where twistd")
+
+  ##Start the Twisted web server and configure it to control the api
+  print("About to get powershell location.")
+  powershellLocation = getSingleLineShellOutput("where powershell")
+  print("powershellLocation is: ", powershellLocation)
+  #startTwistdCommand = powershellLocation + " $a = start-process -NoNewWindow powershell { "+twistdLocation+" web --wsgi customControllerAPI.app"+" } -PassThru"
+  startTwistdCommand = powershellLocation + " $a = start-process -WindowStyle Hidden powershell { "+twistdLocation+" web --wsgi customControllerAPI.app"+" } -PassThru"
+
+  print("startTwistdCommand is: ", startTwistdCommand)
+  server = subprocess.call(startTwistdCommand, shell=True)
+  print("startTwistdCommand should be running in the background now.")
 
 if platform.system() == 'Linux':
   #Put all commands in single shell command to avoid switching contexts with too many subshells.
