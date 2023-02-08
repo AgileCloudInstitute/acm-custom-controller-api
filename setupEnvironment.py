@@ -85,9 +85,9 @@ if platform.system() == 'Linux':
 
   twistdLocation=$(which twistd)
 
-  echo "Running ${twistdLocation} web --wsgi myAPI.app  &>/dev/null &"
+  echo "Running ${twistdLocation} web --wsgi customControllerAPI.app  &>/dev/null &"
 
-  ($twistdLocation web --wsgi myAPI.py >/dev/null 2>&1)&
+  ($twistdLocation web --wsgi customControllerAPI.py >/dev/null 2>&1)&
 
   echo startTwistdCommand should be running in the background now.
   """)
